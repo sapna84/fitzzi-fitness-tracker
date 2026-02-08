@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weekly Calorie Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #28a745;
+      color: white;
+    }
+    tr:hover {
+      background: #f1f1f1;
+    }
+    .total {
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Weekly Calorie Intake</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>Total Calories (kcal)</th>
+      </tr>
+    </thead>
+    <tbody id="weekTable">
+      <!-- Data will be inserted here -->
+    </tbody>
+  </table>
+
+  <div class="total" id="weeklyTotal"></div>
+</div>
+
+<script>
+  function getCurrentWeekMondayToSunday() {
+    const days = [];
+    const today = new Date();
+
+    // Get Monday of current week
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday
+    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + diffToMonday);
+
+    // Generate Monday to Sunday
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      days.push(d.toISOString().split('T')[0]);
+    }
+
+    return days;
+  }
+
+  function loadWeeklyCalories() {
+    const data = JSON.parse(localStorage.getItem('dailyCalories')) || {};
+    const table = document.getElementById('weekTable');
+    let weeklySum = 0;
+
+    const days = getCurrentWeekMondayToSunday();
+
+    days.forEach(date => {
+      const calories = data[date] || 0;
+      weeklySum += calories;
+
+      const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${date}</td>
+        <td>${dayName}</td>
+        <td>${calories}</td>
+      `;
+      table.appendChild(row);
+    });
+
+    document.getElementById('weeklyTotal').textContent = `Weekly Total: ${weeklySum} kcal`;
+  }
+
+  loadWeeklyCalories();
+</script>
+
+</body>
+</html>

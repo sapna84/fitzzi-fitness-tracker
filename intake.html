@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Intake – Remaining Calories</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 650px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 15px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #f1f1f1;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background: #eef3f7;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .warning {
+      color: red;
+      font-weight: bold;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Daily Food Intake</h2>
+
+  <label>Select Date</label>
+  <input type="date" id="date" />
+
+  <label>Food Item</label>
+  <select id="foodItem">
+    <option value="">-- Select Food --</option>
+    <option value="rice">Rice (130 kcal / 100g)</option>
+    <option value="chapati">Chapati (104 kcal / piece)</option>
+    <option value="apple">Apple (52 kcal / piece)</option>
+    <option value="banana">Banana (89 kcal / piece)</option>
+    <option value="egg">Egg (78 kcal / piece)</option>
+    <option value="chicken">Chicken Breast (165 kcal / 100g)</option>
+  </select>
+
+  <label>Quantity</label>
+  <input type="number" id="quantity" placeholder="Enter quantity" />
+
+  <button onclick="addFood()">Add Intake</button>
+
+  <h3>Today's Intake</h3>
+  <ul id="foodList"></ul>
+
+  <div class="summary">
+    <p>Minimum Calories Required: <strong><span id="minCalories">0</span> kcal</strong></p>
+    <p>Calories Consumed: <strong><span id="consumedCalories">0</span> kcal</strong></p>
+    <p>Remaining Calories: <strong><span id="remainingCalories">0</span> kcal</strong></p>
+    <p id="status"></p>
+  </div>
+</div>
+
+<script>
+  // Food calorie database
+  const foodCalories = {
+    rice: 130,
+    chapati: 104,
+    apple: 52,
+    banana: 89,
+    egg: 78,
+    chicken: 165
+  };
+
+  let consumedCalories = 0;
+  const minCalories = parseInt(localStorage.getItem('minCalories')) || 2000;
+
+  document.getElementById('minCalories').textContent = minCalories;
+
+  function addFood() {
+    const food = document.getElementById('foodItem').value;
+    const qty = parseFloat(document.getElementById('quantity').value);
+    const date = document.getElementById('date').value;
+
+    if (!food || !qty || qty <= 0 || !date) {
+      alert('Please select date, food item and valid quantity');
+      return;
+    }
+
+    const calories = foodCalories[food] * qty;
+    consumedCalories += calories;
+
+    const li = document.createElement('li');
+    li.textContent = `${food} × ${qty} = ${calories} kcal`;
+    document.getElementById('foodList').appendChild(li);
+
+    document.getElementById('consumedCalories').textContent = consumedCalories;
+
+    const remaining = minCalories - consumedCalories;
+    document.getElementById('remainingCalories').textContent = remaining > 0 ? remaining : 0;
+
+    const status = document.getElementById('status');
+    if (remaining > 0) {
+      status.textContent = 'You need to consume more calories today';
+      status.className = 'warning';
+    } else {
+      status.textContent = 'You have met your minimum calorie requirement';
+      status.className = 'success';
+    }
+
+    saveDayCalories(date, consumedCalories);
+    document.getElementById('quantity').value = '';
+  }
+
+  function saveDayCalories(date, calories) {
+    const data = JSON.parse(localStorage.getItem('dailyCalories')) || {};
+    data[date] = calories;
+    localStorage.setItem('dailyCalories', JSON.stringify(data));
+  }
+</script>
+<a href="weekly.html">weekly Intake</a>
+
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitTrack</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+    }
+    .container {
+      max-width: 400px;
+      margin: 80px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #27ae60;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #219150;
+    }
+    .link {
+      text-align: center;
+      margin-top: 15px;
+      color: #2980b9;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+    /* Home page */
+    .home {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .logout {
+      margin-top: 30px;
+      background: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Page -->
+  <div id="loginPage" class="container">
+    <h1>FitTrack</h1>
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <div class="link" onclick="showSignup()">Don't have an account? Sign Up</div>
+  </div>
+
+  <!-- Signup Page -->
+  <div id="signupPage" class="container hidden">
+    <h1>FitTrack</h1>
+    <h2>Sign Up</h2>
+    <input type="text" id="signupName" placeholder="Full Name" />
+    <input type="email" id="signupEmail" placeholder="Email" />
+    <input type="password" id="signupPassword" placeholder="Password" />
+    <button onclick="signup()">Create Account</button>
+    <div class="link" onclick="showLogin()">Already have an account? Login</div>
+  </div>
+
+  <!-- Home Page (Protected) -->
+  <div id="homePage" class="home hidden">
+    <h1>Welcome to FitTrack</h1>
+    <p style="text-align:center;">Track your fitness and stay healthy</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>🏃 Daily Activity</h3>
+        <p>Steps: 8,200</p>
+      </div>
+      <div class="card">
+        <h3>🔥 Calories Burned</h3>
+        <p>540 kcal</p>
+      </div>
+      <div class="card">
+        <h3>💧 Water Intake</h3>
+        <p>2.1 Liters</p>
+      </div>
+      <div class="card">
+        <h3>🛌 Sleep</h3>
+        <p>7h 30m</p>
+      </div>
+    </div>
+
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    function showSignup() {
+      loginPage.classList.add('hidden');
+      signupPage.classList.remove('hidden');
+    }
+
+    function showLogin() {
+      signupPage.classList.add('hidden');
+      loginPage.classList.remove('hidden');
+    }
+
+    function signup() {
+      const email = signupEmail.value;
+      const password = signupPassword.value;
+      if (!email || !password) {
+        alert('Please fill all fields');
+        return;
+      }
+      localStorage.setItem('user', JSON.stringify({ email, password }));
+      goHome();
+    }
+
+    function login() {
+      const savedUser = JSON.parse(localStorage.getItem('user'));
+      if (!savedUser) {
+        alert('No account found. Please sign up.');
+        return;
+      }
+      if (
+        loginEmail.value === savedUser.email &&
+        loginPassword.value === savedUser.password
+      ) {
+        goHome();
+      } else {
+        alert('Invalid credentials');
+      }
+    }
+
+    function goHome() {
+      loginPage.classList.add('hidden');
+      signupPage.classList.add('hidden');
+      homePage.classList.remove('hidden');
+    }
+
+    function logout() {
+      homePage.classList.add('hidden');
+      loginPage.classList.remove('hidden');
+    }
+
+    // Auto-login if user exists
+    if (localStorage.getItem('user')) {
+      goHome();
+    }
+  </script>
+<a href="intake.html">Daily Intake</a>
+
+</body>
+</html>

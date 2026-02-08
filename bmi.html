@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMI Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 15px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f1f1;
+      border-radius: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>BMI Calculator</h2>
+
+  <label>Age</label>
+  <input type="number" id="age" placeholder="Enter age" />
+
+  <label>Gender</label>
+  <select id="gender">
+    <option value="">Select gender</option>
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+  </select>
+
+  <label>Height (cm)</label>
+  <input type="number" id="height" placeholder="Enter height in cm" />
+
+  <label>Weight (kg)</label>
+  <input type="number" id="weight" placeholder="Enter weight in kg" />
+
+  <button onclick="calculateBMI()">Calculate BMI</button>
+
+  <div class="result" id="result" style="display:none;"></div>
+</div>
+
+<script>
+  function calculateBMI() {
+    const age = parseInt(document.getElementById('age').value);
+    const gender = document.getElementById('gender').value;
+    const heightCm = parseFloat(document.getElementById('height').value);
+    const weightKg = parseFloat(document.getElementById('weight').value);
+
+    if (!age || !gender || !heightCm || !weightKg) {
+      alert('Please fill all fields correctly');
+      return;
+    }
+
+    const heightM = heightCm / 100;
+    const bmi = (weightKg / (heightM * heightM)).toFixed(2);
+
+    let category = '';
+    let minCalories = 0;
+
+    if (bmi < 18.5) {
+      category = 'Underweight';
+      minCalories = 2200;
+    } else if (bmi < 25) {
+      category = 'Normal weight';
+      minCalories = 2000;
+    } else if (bmi < 30) {
+      category = 'Overweight';
+      minCalories = 1800;
+    } else {
+      category = 'Obese';
+      minCalories = 1600;
+    }
+
+    // Save minimum calories for intake page
+    localStorage.setItem('minCalories', minCalories);
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = `
+      <h3>Your Results</h3>
+      <p><strong>BMI:</strong> ${bmi}</p>
+      <p><strong>Category:</strong> ${category}</p>
+      <p><strong>Minimum Daily Calories Recommended:</strong> ${minCalories} kcal</p>
+    `;
+  }
+</script>
+
+</body>
+</html>
