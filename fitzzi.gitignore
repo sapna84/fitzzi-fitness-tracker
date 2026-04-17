@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+.env.local
+
+# Build files
+dist/
+build/
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# React build
+frontend/build/
+frontend/node_modules/
+
+# Python
+backend/__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+*.sqlite3
+
+# Secrets and keys
+*.key
+*.pem
+*.crt
